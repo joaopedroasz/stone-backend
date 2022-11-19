@@ -15,9 +15,21 @@ describe('Customer', () => {
     expect(sut).toBeInstanceOf(Customer)
   })
 
-  it('should return provided if', () => {
+  it('should return provided id', () => {
     const sut = makeSut()
 
     expect(sut.getId()).toBe('any_id')
+  })
+
+  it('should return provided document', () => {
+    const sut = makeSut()
+
+    expect(sut.getDocument()).toBe('any_document')
+  })
+
+  it('should return provided name', () => {
+    const sut = makeSut()
+
+    expect(sut.getName()).toBe('any_name')
   })
 })

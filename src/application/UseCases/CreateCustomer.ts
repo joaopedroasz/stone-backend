@@ -1,15 +1,17 @@
 import { Customer } from '@/domain/models'
 import { CreateCustomerRepository } from '@/domain/repositories/Customer'
-import { CreateCustomer, CreateCustomerInputDTO, CreateCustomerOutputDTO } from '../contracts'
+import { CreateCustomer, CreateCustomerInputDTO, CreateCustomerOutputDTO, GenerateIdService } from '../contracts'
 
 export class CreateCustomerUseCase implements CreateCustomer {
   constructor (
-    private readonly createCustomerRepository: CreateCustomerRepository
+    private readonly createCustomerRepository: CreateCustomerRepository,
+    private readonly generateIdService: GenerateIdService
   ) {}
 
   public async execute (input: CreateCustomerInputDTO): Promise<CreateCustomerOutputDTO> {
     const { document, name } = input
-    const customer = new Customer({ document, name })
+    const id = this.generateIdService.generate()
+    const customer = new Customer({ document, name, id })
     await this.createCustomerRepository.create(customer)
     return {
       id: 'any_id',

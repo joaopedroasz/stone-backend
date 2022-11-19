@@ -1,1 +1,2 @@
-export * from './customer'
+export * from './Customer'
+export * from './CustomerCode'

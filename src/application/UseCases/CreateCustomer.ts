@@ -12,11 +12,11 @@ export class CreateCustomerUseCase implements CreateCustomer {
     const { document, name } = input
     const id = this.generateIdService.generate()
     const customer = new Customer({ document, name, id })
-    await this.createCustomerRepository.create(customer)
+    const createdCustomer = await this.createCustomerRepository.create(customer)
     return {
-      id: 'any_id',
-      document: 'any_document',
-      name: 'any_name'
+      id: createdCustomer.getId(),
+      document: createdCustomer.getDocument(),
+      name: createdCustomer.getName()
     }
   }
 }

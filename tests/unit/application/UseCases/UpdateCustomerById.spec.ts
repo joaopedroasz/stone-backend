@@ -1,5 +1,5 @@
 import { Customer, CustomerProps } from '@/domain/models'
-import { LoadCustomerByIdRepository } from '@/domain/repositories/Customer'
+import { LoadCustomerByIdRepository, UpdateCustomerByIdRepository } from '@/domain/repositories/Customer'
 import { UpdateCustomerById } from '@/application/contracts'
 import { UpdateCustomerByIdUseCase } from '@/application/UseCases'
 
@@ -14,17 +14,28 @@ const makeLoadCustomerByIdRepository = (): LoadCustomerByIdRepository => ({
   load: async (id: string): Promise<Customer> => makeCustomer({ id })
 })
 
+const makeUpdateCustomerByIdRepository = (): UpdateCustomerByIdRepository => ({
+  update: async (customer: Customer): Promise<Customer> => makeCustomer({
+    id: customer.getId(),
+    document: customer.getDocument(),
+    name: customer.getName()
+  })
+})
+
 type SutType = {
   sut: UpdateCustomerById
   loadCustomerByIdRepository: LoadCustomerByIdRepository
+  updateCustomerByIdRepository: UpdateCustomerByIdRepository
 }
 
 const makeSut = (): SutType => {
   const loadCustomerByIdRepository = makeLoadCustomerByIdRepository()
+  const updateCustomerByIdRepository = makeUpdateCustomerByIdRepository()
   const sut = new UpdateCustomerByIdUseCase(loadCustomerByIdRepository)
   return {
     sut,
-    loadCustomerByIdRepository
+    loadCustomerByIdRepository,
+    updateCustomerByIdRepository
   }
 }
 
@@ -35,8 +46,10 @@ describe('UpdateCustomerById UseCase', () => {
 
     await sut.execute({
       id: 'any_id',
-      document: 200,
-      name: 'any_name'
+      newCustomer: {
+        document: 200,
+        name: 'any_name'
+      }
     })
 
     expect(loadCustomerByIdRepositorySpy).toHaveBeenCalledWith('any_id')

@@ -24,4 +24,12 @@ export class Customer {
   public getId (): string {
     return this.id.getCode()
   }
+
+  public getDocument (): string {
+    return this.document
+  }
+
+  public getName (): string {
+    return this.name
+  }
 }

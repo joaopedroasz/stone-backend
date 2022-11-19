@@ -62,4 +62,24 @@ describe('CreateCustomer', () => {
 
     expect(generateIdServiceSpy).toHaveBeenCalledTimes(1)
   })
+
+  it('should return CreateCustomerRepository result on success', async () => {
+    const { sut, createCustomerRepository } = makeSut()
+    jest.spyOn(createCustomerRepository, 'create').mockResolvedValueOnce(new Customer({
+      id: 'id',
+      document: 'document',
+      name: 'name'
+    }))
+
+    const result = await sut.execute({
+      document: 'any_document',
+      name: 'any_name'
+    })
+
+    expect(result).toEqual({
+      id: 'id',
+      document: 'document',
+      name: 'name'
+    })
+  })
 })

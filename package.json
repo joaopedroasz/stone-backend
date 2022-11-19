@@ -20,6 +20,7 @@
     "typescript": "*"
   },
   "scripts": {
-    "test": "jest --passWithNoTests --no-cache --runInBand"
+    "test": "jest --passWithNoTests --no-cache --runInBand",
+    "test:watch": "yarn test --watch"
   }
 }

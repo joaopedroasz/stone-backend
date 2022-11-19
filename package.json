@@ -17,5 +17,8 @@
     "eslint-plugin-promise": "^6.0.0",
     "jest": "^29.3.1",
     "typescript": "*"
+  },
+  "scripts": {
+    "test": "jest --passWithNoTests --no-cache --runInBand --forceExit"
   }
 }

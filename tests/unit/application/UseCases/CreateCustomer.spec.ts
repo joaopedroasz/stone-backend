@@ -1,6 +1,6 @@
 import { Customer } from '@/domain/models'
 import { CreateCustomerRepository } from '@/domain/repositories/Customer'
-import { CreateCustomer } from '@/application/contracts'
+import { CreateCustomer, GenerateIdService } from '@/application/contracts'
 import { CreateCustomerUseCase } from '@/application/UseCases'
 
 const makeCustomer = (): Customer => new Customer({
@@ -13,17 +13,24 @@ const makeCreateCustomerRepository = (): CreateCustomerRepository => ({
   create: async (): Promise<Customer> => makeCustomer()
 })
 
+const makeGenerateIdService = (): GenerateIdService => ({
+  generate: (): string => 'any_id'
+})
+
 type SutType = {
   sut: CreateCustomer
   createCustomerRepository: CreateCustomerRepository
+  generateIdService: GenerateIdService
 }
 
 const makeSut = (): SutType => {
   const createCustomerRepository = makeCreateCustomerRepository()
-  const sut = new CreateCustomerUseCase(createCustomerRepository)
+  const generateIdService = makeGenerateIdService()
+  const sut = new CreateCustomerUseCase(createCustomerRepository, generateIdService)
   return {
     sut,
-    createCustomerRepository
+    createCustomerRepository,
+    generateIdService
   }
 }
 
@@ -38,8 +45,21 @@ describe('CreateCustomer', () => {
     })
 
     expect(createCustomerRepositorySpy).toHaveBeenCalledWith(new Customer({
+      id: expect.any(String),
       document: 'any_document',
       name: 'any_name'
     }))
+  })
+
+  it('should call GenerateIdService with correct params', async () => {
+    const { sut, generateIdService } = makeSut()
+    const generateIdServiceSpy = jest.spyOn(generateIdService, 'generate')
+
+    await sut.execute({
+      document: 'any_document',
+      name: 'any_name'
+    })
+
+    expect(generateIdServiceSpy).toHaveBeenCalledTimes(1)
   })
 })

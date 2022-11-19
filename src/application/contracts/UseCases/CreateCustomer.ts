@@ -1,13 +1,13 @@
 import { UseCase } from './UseCase'
 
 export type CreateCustomerInputDTO = {
-  document: string
+  document: number
   name: string
 }
 
 export type CreateCustomerOutputDTO = {
   id: string
-  document: string
+  document: number
   name: string
 }
 

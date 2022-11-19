@@ -5,7 +5,7 @@ import { UpdateCustomerByIdUseCase } from '@/application/UseCases'
 
 const makeCustomer = (props?: Partial<CustomerProps>): Customer => new Customer({
   id: 'any_id',
-  document: 'any_document',
+  document: 200,
   name: 'any_name',
   ...props
 })
@@ -35,7 +35,7 @@ describe('UpdateCustomerById UseCase', () => {
 
     await sut.execute({
       id: 'any_id',
-      document: 'any_document',
+      document: 200,
       name: 'any_name'
     })
 

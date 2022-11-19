@@ -5,7 +5,7 @@ import { CreateCustomerUseCase } from '@/application/UseCases'
 
 const makeCustomer = (): Customer => new Customer({
   id: 'any_id',
-  document: 'any_document',
+  document: 100,
   name: 'any_name'
 })
 
@@ -40,13 +40,13 @@ describe('CreateCustomer', () => {
     const createCustomerRepositorySpy = jest.spyOn(createCustomerRepository, 'create')
 
     await sut.execute({
-      document: 'any_document',
+      document: 300,
       name: 'any_name'
     })
 
     expect(createCustomerRepositorySpy).toHaveBeenCalledWith(new Customer({
       id: expect.any(String),
-      document: 'any_document',
+      document: 300,
       name: 'any_name'
     }))
   })
@@ -56,7 +56,7 @@ describe('CreateCustomer', () => {
     const generateIdServiceSpy = jest.spyOn(generateIdService, 'generate')
 
     await sut.execute({
-      document: 'any_document',
+      document: 1010,
       name: 'any_name'
     })
 
@@ -67,18 +67,18 @@ describe('CreateCustomer', () => {
     const { sut, createCustomerRepository } = makeSut()
     jest.spyOn(createCustomerRepository, 'create').mockResolvedValueOnce(new Customer({
       id: 'id',
-      document: 'document',
+      document: 100,
       name: 'name'
     }))
 
     const result = await sut.execute({
-      document: 'any_document',
+      document: 100,
       name: 'any_name'
     })
 
     expect(result).toEqual({
       id: 'id',
-      document: 'document',
+      document: 100,
       name: 'name'
     })
   })

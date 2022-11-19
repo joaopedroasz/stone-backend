@@ -2,13 +2,13 @@ import { CustomerCode } from './CustomerCode'
 
 export type CustomerProps = {
   id: string
-  document: string
+  document: number
   name: string
 }
 
 export class Customer {
   private readonly id: CustomerCode
-  private readonly document: string
+  private readonly document: number
   private readonly name: string
 
   constructor ({
@@ -25,7 +25,7 @@ export class Customer {
     return this.id.getCode()
   }
 
-  public getDocument (): string {
+  public getDocument (): number {
     return this.document
   }
 

@@ -2,7 +2,7 @@ import { UseCase } from './UseCase'
 
 type Default = {
   id: string
-  document: string
+  document: number
   name: string
 }
 

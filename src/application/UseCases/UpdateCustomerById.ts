@@ -12,7 +12,7 @@ export class UpdateCustomerByIdUseCase implements UpdateCustomerById {
 
     return {
       id: 'any_id',
-      document: 'any_document',
+      document: 200,
       name: 'any_name'
     }
   }

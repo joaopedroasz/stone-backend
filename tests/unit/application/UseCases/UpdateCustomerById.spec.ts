@@ -31,7 +31,10 @@ type SutType = {
 const makeSut = (): SutType => {
   const loadCustomerByIdRepository = makeLoadCustomerByIdRepository()
   const updateCustomerByIdRepository = makeUpdateCustomerByIdRepository()
-  const sut = new UpdateCustomerByIdUseCase(loadCustomerByIdRepository)
+  const sut = new UpdateCustomerByIdUseCase(
+    loadCustomerByIdRepository,
+    updateCustomerByIdRepository
+  )
   return {
     sut,
     loadCustomerByIdRepository,
@@ -53,5 +56,41 @@ describe('UpdateCustomerById UseCase', () => {
     })
 
     expect(loadCustomerByIdRepositorySpy).toHaveBeenCalledWith('any_id')
+  })
+
+  it('should call UpdateCustomerByIdRepository with existent customer name if not provided', async () => {
+    const { sut, updateCustomerByIdRepository } = makeSut()
+    const updateCustomerByIdRepositorySpy = jest.spyOn(updateCustomerByIdRepository, 'update')
+
+    await sut.execute({
+      id: 'any_id',
+      newCustomer: {
+        document: 400
+      }
+    })
+
+    expect(updateCustomerByIdRepositorySpy).toHaveBeenCalledWith(new Customer({
+      id: 'any_id',
+      document: 400,
+      name: 'any_name'
+    }))
+  })
+
+  it('should call UpdateCustomerByIdRepository with existent customer document if not provided', async () => {
+    const { sut, updateCustomerByIdRepository } = makeSut()
+    const updateCustomerByIdRepositorySpy = jest.spyOn(updateCustomerByIdRepository, 'update')
+
+    await sut.execute({
+      id: 'any_id',
+      newCustomer: {
+        name: 'any_name'
+      }
+    })
+
+    expect(updateCustomerByIdRepositorySpy).toHaveBeenCalledWith(new Customer({
+      id: 'any_id',
+      document: 200,
+      name: 'any_name'
+    }))
   })
 })

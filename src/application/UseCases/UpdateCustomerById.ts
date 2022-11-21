@@ -16,12 +16,11 @@ export class UpdateCustomerByIdUseCase implements UpdateCustomerById {
       document: newCustomer.document ?? existentCustomer.getDocument(),
       name: newCustomer.name ?? existentCustomer.getName()
     })
-    await this.updateCustomerByIdRepository.update(customerToUpdate)
-
+    const updatedCustomer = await this.updateCustomerByIdRepository.update(customerToUpdate)
     return {
-      id: 'any_id',
-      document: 200,
-      name: 'any_name'
+      id: updatedCustomer.getId(),
+      document: updatedCustomer.getDocument(),
+      name: updatedCustomer.getName()
     }
   }
 }

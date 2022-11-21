@@ -1,5 +1,5 @@
 import { Customer, CustomerProps } from '@/domain/models'
-import { CustomerNotFoundError } from '@/domain/errors'
+import { CustomerAlreadyExistsError, CustomerNotFoundError } from '@/domain/errors'
 import { LoadCustomerByIdRepository, UpdateCustomerByIdRepository } from '@/domain/repositories/Customer'
 import { UpdateCustomerById } from '@/application/contracts'
 import { UpdateCustomerByIdUseCase } from '@/application/UseCases'
@@ -116,6 +116,7 @@ describe('UpdateCustomerById UseCase', () => {
   it('should call LoadCustomerByIdRepository if new id provided', async () => {
     const { sut, loadCustomerByIdRepository } = makeSut()
     const loadCustomerByIdRepositorySpy = jest.spyOn(loadCustomerByIdRepository, 'load')
+    jest.spyOn(loadCustomerByIdRepository, 'load').mockResolvedValueOnce(undefined)
 
     await sut.execute({
       id: 'any_id',
@@ -127,6 +128,25 @@ describe('UpdateCustomerById UseCase', () => {
     })
 
     expect(loadCustomerByIdRepositorySpy).toHaveBeenCalledWith('new_id')
+  })
+
+  it('should throw CustomerAlreadyExistsError if LoadCustomerByIdRepository returns a customer with new id provided', async () => {
+    const { sut, loadCustomerByIdRepository } = makeSut()
+    jest.spyOn(loadCustomerByIdRepository, 'load').mockResolvedValueOnce(makeCustomer({ id: 'new_id' }))
+
+    const promise = sut.execute({
+      id: 'any_id',
+      newCustomer: {
+        id: 'new_id',
+        document: 200,
+        name: 'any_name'
+      }
+    })
+
+    await expect(promise).rejects.toThrowError(new CustomerAlreadyExistsError({
+      targetProperty: 'id',
+      targetValue: 'new_id'
+    }))
   })
 
   it('should return updated customer by UpdateCustomerByIdRepository', async () => {

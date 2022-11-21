@@ -1,5 +1,5 @@
 import { Customer } from '@/domain/models'
-import { CustomerNotFoundError } from '@/domain/errors'
+import { CustomerAlreadyExistsError, CustomerNotFoundError } from '@/domain/errors'
 import { LoadCustomerByIdRepository, UpdateCustomerByIdRepository } from '@/domain/repositories/Customer'
 import { UpdateCustomerById, UpdateCustomerByIdInputDTO, UpdateCustomerByIdOutputDTO } from '../contracts'
 
@@ -12,8 +12,10 @@ export class UpdateCustomerByIdUseCase implements UpdateCustomerById {
   public async execute (input: UpdateCustomerByIdInputDTO): Promise<UpdateCustomerByIdOutputDTO> {
     const { id, newCustomer } = input
     if (newCustomer?.id) {
-      await this.loadCustomerByIdRepository.load(newCustomer.id)
+      const customerWithNewId = await this.loadCustomerByIdRepository.load(newCustomer.id)
+      if (customerWithNewId) throw new CustomerAlreadyExistsError({ targetProperty: 'id', targetValue: newCustomer.id })
     }
+
     const existentCustomer = await this.loadCustomerByIdRepository.load(id)
     if (!existentCustomer) throw new CustomerNotFoundError({ targetProperty: 'id', targetValue: id })
     const customerToUpdate = new Customer({
@@ -21,6 +23,7 @@ export class UpdateCustomerByIdUseCase implements UpdateCustomerById {
       document: newCustomer.document ?? existentCustomer.getDocument(),
       name: newCustomer.name ?? existentCustomer.getName()
     })
+
     const updatedCustomer = await this.updateCustomerByIdRepository.update(customerToUpdate)
     return {
       id: updatedCustomer.getId(),

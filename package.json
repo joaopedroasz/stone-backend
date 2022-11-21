@@ -22,6 +22,7 @@
   "scripts": {
     "test": "yarn env:test jest --passWithNoTests --no-cache --runInBand",
     "test:watch": "yarn env:test yarn test --watch",
+    "test:coverage": "yarn env:test yarn test --coverage",
     "db:dev:up": "docker-compose --env-file .env.dev up -d dev-db-cache",
     "db:test:up": "docker-compose --env-file .env.test up -d test-db-cache",
     "db:down": "docker-compose down",

@@ -15,7 +15,9 @@ const jestConfig: Config = {
     '^.+\\.(t|j)s?$': '@swc/jest'
   },
   coveragePathIgnorePatterns: [
+    'contracts',
     '<rootDir>/src/main',
+    '<rootDir>/src/domain/repositories',
     'index.ts'
   ],
   clearMocks: true

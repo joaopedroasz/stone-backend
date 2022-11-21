@@ -93,4 +93,22 @@ describe('UpdateCustomerById UseCase', () => {
       name: 'any_name'
     }))
   })
+
+  it('should return updated customer by UpdateCustomerByIdRepository', async () => {
+    const { sut } = makeSut()
+
+    const updatedCustomer = await sut.execute({
+      id: 'any_id',
+      newCustomer: {
+        document: 700,
+        name: 'new_name'
+      }
+    })
+
+    expect(updatedCustomer).toEqual({
+      id: 'any_id',
+      document: 700,
+      name: 'new_name'
+    })
+  })
 })

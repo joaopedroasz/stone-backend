@@ -12,9 +12,9 @@ export class LoadCustomerByIdUseCase implements LoadCustomerById {
     const loadedCustomer = await this.loadCustomerByIdRepository.load(customerId)
     if (!loadedCustomer) throw new CustomerNotFoundError({ targetProperty: 'id', targetValue: customerId })
     return {
-      id: '',
-      document: 0,
-      name: ''
+      id: loadedCustomer.getId(),
+      document: loadedCustomer.getDocument(),
+      name: loadedCustomer.getName()
     }
   }
 }

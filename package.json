@@ -22,5 +22,8 @@
   "scripts": {
     "test": "jest --passWithNoTests --no-cache --runInBand",
     "test:watch": "yarn test --watch"
+  },
+  "dependencies": {
+    "ioredis": "^5.2.4"
   }
 }

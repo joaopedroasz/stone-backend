@@ -1,1 +1,11 @@
 node_modules
+dist
+coverage
+.DS_Store
+
+# Env Files
+.env*
+!.env.example
+
+# Docker volumes:
+cache

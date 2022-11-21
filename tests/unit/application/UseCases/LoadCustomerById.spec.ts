@@ -46,4 +46,16 @@ describe('LoadCustomerById Use Case', () => {
 
     await expect(promise).rejects.toThrowError(new CustomerNotFoundError({ targetProperty: 'id', targetValue: 'any_invalid_id' }))
   })
+
+  it('should return a Customer on success', async () => {
+    const { sut } = makeSut()
+
+    const customer = await sut.execute({ customerId: 'any_id' })
+
+    expect(customer).toEqual({
+      id: 'any_id',
+      document: 100,
+      name: 'any_name'
+    })
+  })
 })

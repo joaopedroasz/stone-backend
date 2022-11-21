@@ -2,6 +2,7 @@ import { Customer } from '@/domain/models'
 import { LoadCustomerByIdRepository } from '@/domain/repositories/Customer'
 import { LoadCustomerById } from '@/application/contracts'
 import { LoadCustomerByIdUseCase } from '@/application/UseCases'
+import { CustomerNotFoundError } from '@/domain/errors'
 
 const makeCustomer = (): Customer => new Customer({
   id: 'any_id',
@@ -35,5 +36,14 @@ describe('LoadCustomerById Use Case', () => {
     await sut.execute({ customerId: 'any_id' })
 
     expect(loadByIdSpy).toHaveBeenCalledWith('any_id')
+  })
+
+  it('should throw CustomerNotFoundError if LoadCustomerByIdRepository returns undefined', async () => {
+    const { sut, loadCustomerByIdRepository } = makeSut()
+    jest.spyOn(loadCustomerByIdRepository, 'load').mockResolvedValueOnce(undefined)
+
+    const promise = sut.execute({ customerId: 'any_invalid_id' })
+
+    await expect(promise).rejects.toThrowError(new CustomerNotFoundError({ targetProperty: 'id', targetValue: 'any_invalid_id' }))
   })
 })

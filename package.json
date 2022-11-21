@@ -20,8 +20,13 @@
     "typescript": "*"
   },
   "scripts": {
-    "test": "jest --passWithNoTests --no-cache --runInBand",
-    "test:watch": "yarn test --watch"
+    "test": "yarn env:test jest --passWithNoTests --no-cache --runInBand",
+    "test:watch": "yarn env:test yarn test --watch",
+    "db:dev:up": "docker-compose --env-file .env.dev up -d dev-db-cache",
+    "db:test:up": "docker-compose --env-file .env.test up -d test-db-cache",
+    "db:down": "docker-compose down",
+    "env:test": "dotenv -e .env.test --",
+    "env:dev": "dotenv -e .env.development --"
   },
   "dependencies": {
     "dotenv-cli": "^6.0.0",

@@ -11,6 +11,9 @@ export class UpdateCustomerByIdUseCase implements UpdateCustomerById {
 
   public async execute (input: UpdateCustomerByIdInputDTO): Promise<UpdateCustomerByIdOutputDTO> {
     const { id, newCustomer } = input
+    if (newCustomer?.id) {
+      await this.loadCustomerByIdRepository.load(newCustomer.id)
+    }
     const existentCustomer = await this.loadCustomerByIdRepository.load(id)
     if (!existentCustomer) throw new CustomerNotFoundError({ targetProperty: 'id', targetValue: id })
     const customerToUpdate = new Customer({

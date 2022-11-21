@@ -1,6 +1,7 @@
 import { UseCase } from './UseCase'
 
 type Default = {
+  id: string
   document: number
   name: string
 }

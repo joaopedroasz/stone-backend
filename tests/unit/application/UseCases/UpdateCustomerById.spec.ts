@@ -1,4 +1,5 @@
 import { Customer, CustomerProps } from '@/domain/models'
+import { CustomerNotFoundError } from '@/domain/errors'
 import { LoadCustomerByIdRepository, UpdateCustomerByIdRepository } from '@/domain/repositories/Customer'
 import { UpdateCustomerById } from '@/application/contracts'
 import { UpdateCustomerByIdUseCase } from '@/application/UseCases'
@@ -91,6 +92,24 @@ describe('UpdateCustomerById UseCase', () => {
       id: 'any_id',
       document: 200,
       name: 'any_name'
+    }))
+  })
+
+  it('should throw CustomerNotFoundError if LoadCustomerByIdRepository returns undefined', async () => {
+    const { sut, loadCustomerByIdRepository } = makeSut()
+    jest.spyOn(loadCustomerByIdRepository, 'load').mockResolvedValueOnce(undefined)
+
+    const promise = sut.execute({
+      id: 'any_id',
+      newCustomer: {
+        document: 200,
+        name: 'any_name'
+      }
+    })
+
+    await expect(promise).rejects.toThrowError(new CustomerNotFoundError({
+      targetProperty: 'id',
+      targetValue: 'any_id'
     }))
   })
 

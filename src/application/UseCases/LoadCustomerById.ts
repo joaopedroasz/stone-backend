@@ -1,3 +1,4 @@
+import { CustomerNotFoundError } from '@/domain/errors'
 import { LoadCustomerByIdRepository } from '@/domain/repositories/Customer'
 import { LoadCustomerById, LoadCustomerByIdInputDTO, LoadCustomerByIdOutputDTO } from '../contracts'
 
@@ -8,7 +9,8 @@ export class LoadCustomerByIdUseCase implements LoadCustomerById {
 
   public async execute (input: LoadCustomerByIdInputDTO): Promise<LoadCustomerByIdOutputDTO> {
     const { customerId } = input
-    await this.loadCustomerByIdRepository.load(customerId)
+    const loadedCustomer = await this.loadCustomerByIdRepository.load(customerId)
+    if (!loadedCustomer) throw new CustomerNotFoundError({ targetProperty: 'id', targetValue: customerId })
     return {
       id: '',
       document: 0,

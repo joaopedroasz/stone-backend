@@ -113,6 +113,22 @@ describe('UpdateCustomerById UseCase', () => {
     }))
   })
 
+  it('should call LoadCustomerByIdRepository if new id provided', async () => {
+    const { sut, loadCustomerByIdRepository } = makeSut()
+    const loadCustomerByIdRepositorySpy = jest.spyOn(loadCustomerByIdRepository, 'load')
+
+    await sut.execute({
+      id: 'any_id',
+      newCustomer: {
+        id: 'new_id',
+        document: 200,
+        name: 'any_name'
+      }
+    })
+
+    expect(loadCustomerByIdRepositorySpy).toHaveBeenCalledWith('new_id')
+  })
+
   it('should return updated customer by UpdateCustomerByIdRepository', async () => {
     const { sut } = makeSut()
 

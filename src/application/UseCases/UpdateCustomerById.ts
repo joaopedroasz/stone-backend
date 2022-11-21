@@ -11,7 +11,7 @@ export class UpdateCustomerByIdUseCase implements UpdateCustomerById {
 
   public async execute (input: UpdateCustomerByIdInputDTO): Promise<UpdateCustomerByIdOutputDTO> {
     const { id, newCustomer } = input
-    if (newCustomer?.id) {
+    if (newCustomer.id) {
       const customerWithNewId = await this.loadCustomerByIdRepository.load(newCustomer.id)
       if (customerWithNewId) throw new CustomerAlreadyExistsError({ targetProperty: 'id', targetValue: newCustomer.id })
     }
@@ -19,7 +19,7 @@ export class UpdateCustomerByIdUseCase implements UpdateCustomerById {
     const existentCustomer = await this.loadCustomerByIdRepository.load(id)
     if (!existentCustomer) throw new CustomerNotFoundError({ targetProperty: 'id', targetValue: id })
     const customerToUpdate = new Customer({
-      id,
+      id: newCustomer.id ?? existentCustomer.getId(),
       document: newCustomer.document ?? existentCustomer.getDocument(),
       name: newCustomer.name ?? existentCustomer.getName()
     })

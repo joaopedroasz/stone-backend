@@ -5,7 +5,8 @@ import {
   CreateCustomerHttpController,
   CreateCustomerHttpInputDTO,
   MissingParamError,
-  success
+  success,
+  unknownError
 } from '@/infra/http'
 
 const makeHttpRequest = (props?: Partial<CreateCustomerHttpInputDTO>): CreateCustomerHttpInputDTO => ({
@@ -83,5 +84,15 @@ describe('CreateCustomerHttpController', () => {
       document: 10,
       name: 'any_name'
     }))
+  })
+
+  it('should return unknownError if use case throws non error instance', async () => {
+    const { sut, createCustomer } = makeSut()
+    const httpRequest = makeHttpRequest()
+    jest.spyOn(createCustomer, 'execute').mockRejectedValueOnce('any_error')
+
+    const httpResponse = await sut.handle(httpRequest)
+
+    expect(httpResponse).toEqual(unknownError('any_error'))
   })
 })

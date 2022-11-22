@@ -6,6 +6,7 @@ import {
   CreateCustomerHttpOutputDTO,
   HttpResponse,
   MissingParamError,
+  serverError,
   success,
   unknownError
 } from '@/infra/http'
@@ -24,7 +25,10 @@ export class CreateCustomerHttpController implements CreateCustomerHttp {
 
       return success<CreateCustomerHttpOutputDTO>(createdCustomer)
     } catch (error) {
-      return unknownError(error)
+      const isError = error instanceof Error
+      if (!isError) return unknownError(error)
+
+      return serverError(error)
     }
   }
 

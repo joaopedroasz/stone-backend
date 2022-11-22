@@ -5,7 +5,8 @@ import {
   CreateCustomerHttpInputDTO,
   CreateCustomerHttpOutputDTO,
   HttpResponse,
-  MissingParamError
+  MissingParamError,
+  success
 } from '@/infra/http'
 
 export class CreateCustomerHttpController implements CreateCustomerHttp {
@@ -17,16 +18,9 @@ export class CreateCustomerHttpController implements CreateCustomerHttp {
     const errorInRequest = this.validateRequest(request)
     if (errorInRequest) return badRequest(errorInRequest)
 
-    await this.createCustomer.execute(request)
+    const createdCustomer = await this.createCustomer.execute(request)
 
-    return {
-      statusCode: 0,
-      body: {
-        id: '',
-        name: '',
-        document: 0
-      }
-    }
+    return success<CreateCustomerHttpOutputDTO>(createdCustomer)
   }
 
   private validateRequest (request: CreateCustomerHttpInputDTO): MissingParamError | undefined {

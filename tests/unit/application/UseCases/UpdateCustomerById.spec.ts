@@ -16,7 +16,7 @@ const makeLoadCustomerByIdRepository = (): LoadCustomerByIdRepository => ({
 })
 
 const makeUpdateCustomerByIdRepository = (): UpdateCustomerByIdRepository => ({
-  update: async (id: string, customer: Customer): Promise<Customer> => makeCustomer({
+  update: async (customer: Customer): Promise<Customer> => makeCustomer({
     id: customer.getId(),
     document: customer.getDocument(),
     name: customer.getName()
@@ -71,7 +71,7 @@ describe('UpdateCustomerById UseCase', () => {
       }
     })
 
-    expect(updateCustomerByIdRepositorySpy).toHaveBeenCalledWith('existent_customer_id', makeCustomer({
+    expect(updateCustomerByIdRepositorySpy).toHaveBeenCalledWith(makeCustomer({
       id: 'existent_customer_id',
       document: 200,
       name: 'any_name'
@@ -91,7 +91,7 @@ describe('UpdateCustomerById UseCase', () => {
       }
     })
 
-    expect(updateCustomerByIdRepositorySpy).toHaveBeenCalledWith('existent_customer_id', new Customer({
+    expect(updateCustomerByIdRepositorySpy).toHaveBeenCalledWith(new Customer({
       id: 'any_new_id',
       document: 400,
       name: 'any_name'
@@ -111,7 +111,7 @@ describe('UpdateCustomerById UseCase', () => {
       }
     })
 
-    expect(updateCustomerByIdRepositorySpy).toHaveBeenCalledWith('existent_customer_id', new Customer({
+    expect(updateCustomerByIdRepositorySpy).toHaveBeenCalledWith(new Customer({
       id: 'any_new_id',
       document: 200,
       name: 'any_name'
@@ -132,7 +132,7 @@ describe('UpdateCustomerById UseCase', () => {
       }
     })
 
-    expect(updateCustomerByIdRepositorySpy).toHaveBeenCalledWith('existent_customer_id', new Customer({
+    expect(updateCustomerByIdRepositorySpy).toHaveBeenCalledWith(new Customer({
       id: 'new_id',
       document: 1000,
       name: 'new_name'

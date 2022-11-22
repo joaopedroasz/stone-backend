@@ -49,7 +49,7 @@ describe('UpdateCustomerByIdRedisRepository', () => {
       document: 300,
       id: 'new_id'
     })
-    const updatedCustomer = await sut.update(createdCustomer.getId(), newCustomer)
+    const updatedCustomer = await sut.update(newCustomer)
 
     expect(updatedCustomer).toEqual(newCustomer)
   })

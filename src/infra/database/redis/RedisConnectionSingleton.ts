@@ -51,6 +51,7 @@ export class RedisConnectionSingleton implements DatabaseConnection {
   }
 
   public async delete (key: string): Promise<boolean> {
+    if (!this.connection) throw new ConnectionNotEstablishedError()
     return !!await this.connection.del(key)
   }
 }

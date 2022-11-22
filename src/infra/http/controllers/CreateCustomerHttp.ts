@@ -1,3 +1,4 @@
+import { CreateCustomer } from '@/application/contracts'
 import {
   badRequest,
   CreateCustomerHttp,
@@ -8,9 +9,15 @@ import {
 } from '@/infra/http'
 
 export class CreateCustomerHttpController implements CreateCustomerHttp {
+  constructor (
+    private readonly createCustomer: CreateCustomer
+  ) {}
+
   public async handle (request: CreateCustomerHttpInputDTO): Promise<HttpResponse<CreateCustomerHttpOutputDTO | Error>> {
     const errorInRequest = this.validateRequest(request)
     if (errorInRequest) return badRequest(errorInRequest)
+
+    await this.createCustomer.execute(request)
 
     return {
       statusCode: 0,

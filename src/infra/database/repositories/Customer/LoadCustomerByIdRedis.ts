@@ -10,6 +10,9 @@ export class LoadCustomerByIdRedisRepository implements LoadCustomerByIdReposito
   public async load (id: string): Promise<Customer | undefined> {
     const key = `customer:${id}`
     const stringifiedCustomer = await this.connection.get(key)
+
+    if (!stringifiedCustomer) return undefined
+
     const customer = JSON.parse(stringifiedCustomer)
     return new Customer({
       id: customer.id,

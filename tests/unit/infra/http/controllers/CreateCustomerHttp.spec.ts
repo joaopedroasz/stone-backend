@@ -1,5 +1,7 @@
 import { CreateCustomer, CreateCustomerOutputDTO } from '@/application/contracts'
+import { CustomerNotCreatedError } from '@/infra/database'
 import {
+  badGateway,
   badRequest,
   CreateCustomerHttp,
   CreateCustomerHttpController,
@@ -105,5 +107,15 @@ describe('CreateCustomerHttpController', () => {
     const httpResponse = await sut.handle(httpRequest)
 
     expect(httpResponse).toEqual(serverError(new Error('any_error')))
+  })
+
+  it('should return badGateway if use case throws CustomerNotCreatedError', async () => {
+    const { sut, createCustomer } = makeSut()
+    const httpRequest = makeHttpRequest()
+    jest.spyOn(createCustomer, 'execute').mockRejectedValueOnce(new CustomerNotCreatedError())
+
+    const httpResponse = await sut.handle(httpRequest)
+
+    expect(httpResponse).toEqual(badGateway(new CustomerNotCreatedError()))
   })
 })

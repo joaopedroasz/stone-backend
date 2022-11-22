@@ -1,5 +1,5 @@
 import { Customer } from '@/domain/models'
 
 export interface UpdateCustomerByIdRepository {
-  update: (customer: Customer) => Promise<Customer>
+  update: (id: string, customer: Customer) => Promise<Customer>
 }

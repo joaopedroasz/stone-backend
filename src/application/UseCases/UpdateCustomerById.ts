@@ -24,7 +24,7 @@ export class UpdateCustomerByIdUseCase implements UpdateCustomerById {
       name: newCustomer.name ?? existentCustomer.getName()
     })
 
-    const updatedCustomer = await this.updateCustomerByIdRepository.update(customerToUpdate)
+    const updatedCustomer = await this.updateCustomerByIdRepository.update(id, customerToUpdate)
     return {
       id: updatedCustomer.getId(),
       document: updatedCustomer.getDocument(),

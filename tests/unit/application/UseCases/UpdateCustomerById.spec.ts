@@ -1,6 +1,6 @@
 import { Customer, CustomerProps } from '@/domain/models'
 import { CustomerAlreadyExistsError, CustomerNotFoundError } from '@/domain/errors'
-import { LoadCustomerByIdRepository, UpdateCustomerByIdRepository } from '@/domain/repositories/Customer'
+import { DeleteCustomerByIdRepository, LoadCustomerByIdRepository, UpdateCustomerByIdRepository } from '@/domain/repositories/Customer'
 import { UpdateCustomerById } from '@/application/contracts'
 import { UpdateCustomerByIdUseCase } from '@/application/UseCases'
 
@@ -23,23 +23,31 @@ const makeUpdateCustomerByIdRepository = (): UpdateCustomerByIdRepository => ({
   })
 })
 
+const makeDeleteCustomerByIdRepository = (): DeleteCustomerByIdRepository => ({
+  delete: async (id: string): Promise<void> => {}
+})
+
 type SutType = {
   sut: UpdateCustomerById
   loadCustomerByIdRepository: LoadCustomerByIdRepository
   updateCustomerByIdRepository: UpdateCustomerByIdRepository
+  deleteCustomerByIdRepository: DeleteCustomerByIdRepository
 }
 
 const makeSut = (): SutType => {
   const loadCustomerByIdRepository = makeLoadCustomerByIdRepository()
   const updateCustomerByIdRepository = makeUpdateCustomerByIdRepository()
+  const deleteCustomerByIdRepository = makeDeleteCustomerByIdRepository()
   const sut = new UpdateCustomerByIdUseCase(
     loadCustomerByIdRepository,
-    updateCustomerByIdRepository
+    updateCustomerByIdRepository,
+    deleteCustomerByIdRepository
   )
   return {
     sut,
     loadCustomerByIdRepository,
-    updateCustomerByIdRepository
+    updateCustomerByIdRepository,
+    deleteCustomerByIdRepository
   }
 }
 
@@ -175,8 +183,7 @@ describe('UpdateCustomerById UseCase', () => {
   })
 
   it('should throw CustomerAlreadyExistsError if LoadCustomerByIdRepository returns a customer with new id provided', async () => {
-    const { sut, loadCustomerByIdRepository } = makeSut()
-    jest.spyOn(loadCustomerByIdRepository, 'load').mockResolvedValueOnce(makeCustomer({ id: 'new_id' }))
+    const { sut } = makeSut()
 
     const promise = sut.execute({
       id: 'any_id',
@@ -209,5 +216,54 @@ describe('UpdateCustomerById UseCase', () => {
       document: 700,
       name: 'new_name'
     })
+  })
+
+  it('should call DeleteCustomerByIdRepository with customer old id if new id provided', async () => {
+    const { sut, deleteCustomerByIdRepository, loadCustomerByIdRepository } = makeSut()
+    const deleteCustomerByIdRepositorySpy = jest.spyOn(deleteCustomerByIdRepository, 'delete')
+    jest.spyOn(loadCustomerByIdRepository, 'load').mockResolvedValueOnce(undefined)
+
+    await sut.execute({
+      id: 'old_id',
+      newCustomer: {
+        id: 'new_id',
+        document: 200,
+        name: 'any_name'
+      }
+    })
+
+    expect(deleteCustomerByIdRepositorySpy).toHaveBeenCalledWith('old_id')
+  })
+
+  it('should not call DeleteCustomerByIdRepository if new id not provided', async () => {
+    const { sut, deleteCustomerByIdRepository } = makeSut()
+    const deleteCustomerByIdRepositorySpy = jest.spyOn(deleteCustomerByIdRepository, 'delete')
+
+    await sut.execute({
+      id: 'any_id',
+      newCustomer: {
+        document: 200,
+        name: 'any_name'
+      }
+    })
+
+    expect(deleteCustomerByIdRepositorySpy).not.toHaveBeenCalled()
+  })
+
+  it('should not call DeleteCustomerByIdRepository if new id is the same as old id', async () => {
+    const { sut, deleteCustomerByIdRepository, loadCustomerByIdRepository } = makeSut()
+    const deleteCustomerByIdRepositorySpy = jest.spyOn(deleteCustomerByIdRepository, 'delete')
+    jest.spyOn(loadCustomerByIdRepository, 'load').mockResolvedValueOnce(undefined)
+
+    await sut.execute({
+      id: 'any_id',
+      newCustomer: {
+        id: 'any_id',
+        document: 200,
+        name: 'any_name'
+      }
+    })
+
+    expect(deleteCustomerByIdRepositorySpy).not.toHaveBeenCalled()
   })
 })

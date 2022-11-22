@@ -23,7 +23,7 @@ export class CreateCustomerHttpController implements CreateCustomerHttp {
   }
 
   private validateRequest (request: CreateCustomerHttpInputDTO): MissingParamError | undefined {
-    const requiredFields: ['document'] = ['document']
+    const requiredFields: ['document', 'name'] = ['document', 'name']
     for (const field of requiredFields) {
       const fieldExists = !!request[field]
       if (!fieldExists) return new MissingParamError(field)

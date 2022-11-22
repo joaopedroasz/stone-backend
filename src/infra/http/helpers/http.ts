@@ -9,3 +9,8 @@ export const success = <T = Record<string, any>>(data: T): HttpResponse<T> => ({
   statusCode: 200,
   body: data
 })
+
+export const unknownError = (error: any): HttpResponse<Error> => ({
+  statusCode: 500,
+  body: new Error(error)
+})

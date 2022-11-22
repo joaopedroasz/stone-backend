@@ -6,7 +6,8 @@ import {
   CreateCustomerHttpOutputDTO,
   HttpResponse,
   MissingParamError,
-  success
+  success,
+  unknownError
 } from '@/infra/http'
 
 export class CreateCustomerHttpController implements CreateCustomerHttp {
@@ -15,12 +16,16 @@ export class CreateCustomerHttpController implements CreateCustomerHttp {
   ) {}
 
   public async handle (request: CreateCustomerHttpInputDTO): Promise<HttpResponse<CreateCustomerHttpOutputDTO | Error>> {
-    const errorInRequest = this.validateRequest(request)
-    if (errorInRequest) return badRequest(errorInRequest)
+    try {
+      const errorInRequest = this.validateRequest(request)
+      if (errorInRequest) return badRequest(errorInRequest)
 
-    const createdCustomer = await this.createCustomer.execute(request)
+      const createdCustomer = await this.createCustomer.execute(request)
 
-    return success<CreateCustomerHttpOutputDTO>(createdCustomer)
+      return success<CreateCustomerHttpOutputDTO>(createdCustomer)
+    } catch (error) {
+      return unknownError(error)
+    }
   }
 
   private validateRequest (request: CreateCustomerHttpInputDTO): MissingParamError | undefined {

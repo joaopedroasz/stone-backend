@@ -121,4 +121,21 @@ describe('RedisConnectionSingleton', () => {
 
     expect(delSpy).toHaveBeenCalledWith('any_key')
   })
+
+  it('should return true if del returns 1', async () => {
+    await sut.connect()
+
+    const result = await sut.delete('any_key')
+
+    expect(result).toBeTruthy()
+  })
+
+  it('should return false if del returns 0', async () => {
+    delSpy.mockResolvedValueOnce(0)
+    await sut.connect()
+
+    const result = await sut.delete('any_key')
+
+    expect(result).toBeFalsy()
+  })
 })

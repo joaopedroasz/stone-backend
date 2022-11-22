@@ -34,4 +34,15 @@ describe('CreateCustomerHttpController', () => {
 
     expect(httpResponse).toEqual(badRequest(new MissingParamError('document')))
   })
+
+  it('should return badRequest if no name provided', async () => {
+    const { sut } = makeSut()
+    const httpRequest = makeHttpRequest({
+      name: undefined
+    })
+
+    const httpResponse = await sut.handle(httpRequest)
+
+    expect(httpResponse).toEqual(badRequest(new MissingParamError('name')))
+  })
 })

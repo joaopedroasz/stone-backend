@@ -1,5 +1,7 @@
 import { CreateCustomer } from '@/application/contracts'
+import { CustomerNotCreatedError } from '@/infra/database'
 import {
+  badGateway,
   badRequest,
   CreateCustomerHttp,
   CreateCustomerHttpInputDTO,
@@ -27,6 +29,14 @@ export class CreateCustomerHttpController implements CreateCustomerHttp {
     } catch (error) {
       const isError = error instanceof Error
       if (!isError) return unknownError(error)
+
+      const badGatewayErrors = [
+        CustomerNotCreatedError
+      ]
+
+      for (const badGatewayError of badGatewayErrors) {
+        if (error instanceof badGatewayError) return badGateway(error)
+      }
 
       return serverError(error)
     }

@@ -19,3 +19,8 @@ export const serverError = (error: Error): HttpResponse<Error> => ({
   statusCode: 500,
   body: error
 })
+
+export const badGateway = (error: Error): HttpResponse<Error> => ({
+  statusCode: 502,
+  body: error
+})

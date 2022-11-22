@@ -1,12 +1,13 @@
 import { Customer } from '@/domain/models'
 import { CustomerAlreadyExistsError, CustomerNotFoundError } from '@/domain/errors'
-import { LoadCustomerByIdRepository, UpdateCustomerByIdRepository } from '@/domain/repositories/Customer'
+import { DeleteCustomerByIdRepository, LoadCustomerByIdRepository, UpdateCustomerByIdRepository } from '@/domain/repositories/Customer'
 import { UpdateCustomerById, UpdateCustomerByIdInputDTO, UpdateCustomerByIdOutputDTO } from '../contracts'
 
 export class UpdateCustomerByIdUseCase implements UpdateCustomerById {
   constructor (
     private readonly loadCustomerByIdRepository: LoadCustomerByIdRepository,
-    private readonly updateCustomerByIdRepository: UpdateCustomerByIdRepository
+    private readonly updateCustomerByIdRepository: UpdateCustomerByIdRepository,
+    private readonly deleteCustomerByIdRepository: DeleteCustomerByIdRepository
   ) {}
 
   public async execute (input: UpdateCustomerByIdInputDTO): Promise<UpdateCustomerByIdOutputDTO> {
@@ -25,6 +26,11 @@ export class UpdateCustomerByIdUseCase implements UpdateCustomerById {
     })
 
     const updatedCustomer = await this.updateCustomerByIdRepository.update(customerToUpdate)
+
+    if (id !== updatedCustomer.getId()) {
+      await this.deleteCustomerByIdRepository.delete(id)
+    }
+
     return {
       id: updatedCustomer.getId(),
       document: updatedCustomer.getDocument(),

@@ -4,7 +4,8 @@ import {
   CreateCustomerHttp,
   CreateCustomerHttpController,
   CreateCustomerHttpInputDTO,
-  MissingParamError
+  MissingParamError,
+  success
 } from '@/infra/http'
 
 const makeHttpRequest = (props?: Partial<CreateCustomerHttpInputDTO>): CreateCustomerHttpInputDTO => ({
@@ -69,5 +70,18 @@ describe('CreateCustomerHttpController', () => {
       name: httpRequest.name,
       document: httpRequest.document
     })
+  })
+
+  it('should return Created if CreateCustomer use case result on success', async () => {
+    const { sut } = makeSut()
+    const httpRequest = makeHttpRequest()
+
+    const httpResponse = await sut.handle(httpRequest)
+
+    expect(httpResponse).toEqual(success({
+      id: 'any_id',
+      document: 10,
+      name: 'any_name'
+    }))
   })
 })

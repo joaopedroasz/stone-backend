@@ -138,4 +138,11 @@ describe('RedisConnectionSingleton', () => {
 
     expect(result).toBeFalsy()
   })
+
+  it('should throw ConnectionNotEstablishedError if del is called before connect', async () => {
+    await sut.disconnect()
+    const promise = sut.delete('any_key')
+
+    await expect(promise).rejects.toThrowError(new ConnectionNotEstablishedError())
+  })
 })

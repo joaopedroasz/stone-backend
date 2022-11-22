@@ -1,3 +1,4 @@
+import { CreateCustomer, CreateCustomerOutputDTO } from '@/application/contracts'
 import {
   badRequest,
   CreateCustomerHttp,
@@ -12,14 +13,25 @@ const makeHttpRequest = (props?: Partial<CreateCustomerHttpInputDTO>): CreateCus
   ...props
 })
 
+const makeCreateCustomer = (): CreateCustomer => ({
+  execute: async (): Promise<CreateCustomerOutputDTO> => ({
+    id: 'any_id',
+    document: 10,
+    name: 'any_name'
+  })
+})
+
 type SutType = {
   sut: CreateCustomerHttp
+  createCustomer: CreateCustomer
 }
 
 const makeSut = (): SutType => {
-  const sut = new CreateCustomerHttpController()
+  const createCustomer = makeCreateCustomer()
+  const sut = new CreateCustomerHttpController(createCustomer)
   return {
-    sut
+    sut,
+    createCustomer
   }
 }
 
@@ -44,5 +56,18 @@ describe('CreateCustomerHttpController', () => {
     const httpResponse = await sut.handle(httpRequest)
 
     expect(httpResponse).toEqual(badRequest(new MissingParamError('name')))
+  })
+
+  it('should call CreateCustomer use case with correct values', async () => {
+    const { sut, createCustomer } = makeSut()
+    const httpRequest = makeHttpRequest()
+    const createCustomerSpy = jest.spyOn(createCustomer, 'execute')
+
+    await sut.handle(httpRequest)
+
+    expect(createCustomerSpy).toHaveBeenCalledWith({
+      name: httpRequest.name,
+      document: httpRequest.document
+    })
   })
 })

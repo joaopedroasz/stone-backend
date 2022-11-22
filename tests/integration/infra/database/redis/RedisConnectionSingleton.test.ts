@@ -10,6 +10,7 @@ jest.mock('ioredis', () => ({
 describe('RedisConnectionSingleton', () => {
   let getSpy: jest.Mock
   let setSpy: jest.Mock
+  let delSpy: jest.Mock
   let disconnectSpy: jest.Mock
   let redisSpy: jest.Mock
 
@@ -21,11 +22,13 @@ describe('RedisConnectionSingleton', () => {
   beforeAll(() => {
     getSpy = jest.fn().mockResolvedValue('any_value')
     setSpy = jest.fn().mockResolvedValue('OK')
+    delSpy = jest.fn().mockResolvedValue(1)
     disconnectSpy = jest.fn()
     redisSpy = jest.fn().mockReturnValue({
       get: getSpy,
       set: setSpy,
-      disconnect: disconnectSpy
+      disconnect: disconnectSpy,
+      del: delSpy
     })
     jest.mocked(Redis).mockImplementation(redisSpy)
   })
@@ -109,5 +112,13 @@ describe('RedisConnectionSingleton', () => {
     const promise = sut.set('any_key', 'any_value')
 
     await expect(promise).rejects.toThrowError(new ConnectionNotEstablishedError())
+  })
+
+  it('should call del with correct value', async () => {
+    await sut.connect()
+
+    await sut.delete('any_key')
+
+    expect(delSpy).toHaveBeenCalledWith('any_key')
   })
 })

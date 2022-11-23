@@ -4,8 +4,6 @@ import { GenerateIdService } from '@/application/contracts'
 
 export class GenerateIdCriptoUuidService implements GenerateIdService {
   public generate (): string {
-    randomUUID()
-
-    return 'any_id'
+    return randomUUID()
   }
 }

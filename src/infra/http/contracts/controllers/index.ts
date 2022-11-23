@@ -1,3 +1,3 @@
 export * from './controller'
 export * from './CreateCustomerHttp'
-export * from './UpdateCustomerHttp'
+export * from './UpdateCustomerByIdHttp'

@@ -1,12 +1,12 @@
 import {
   badRequest,
   MissingParamError,
-  UpdateCustomerHttp,
-  UpdateCustomerHttpController,
-  UpdateCustomerHttpInputDTO
+  UpdateCustomerByIdHttp,
+  UpdateCustomerHttpByIdController,
+  UpdateCustomerByIdHttpInputDTO
 } from '@/infra/http'
 
-const makeHttpRequest = (props?: Partial<UpdateCustomerHttpInputDTO>): UpdateCustomerHttpInputDTO => ({
+const makeHttpRequest = (props?: Partial<UpdateCustomerByIdHttpInputDTO>): UpdateCustomerByIdHttpInputDTO => ({
   existentCustomerId: 'existentCustomerId',
   newId: 'newId',
   newName: 'newName',
@@ -15,18 +15,18 @@ const makeHttpRequest = (props?: Partial<UpdateCustomerHttpInputDTO>): UpdateCus
 })
 
 type SutType = {
-  sut: UpdateCustomerHttp
+  sut: UpdateCustomerByIdHttp
 }
 
 const makeSut = (): SutType => {
-  const sut = new UpdateCustomerHttpController()
+  const sut = new UpdateCustomerHttpByIdController()
   return {
     sut
   }
 }
 
 describe('UpdateCustomerHttpController', () => {
-  it('should return 400 if no existentCustomerId is provided', async () => {
+  it('should return badRequest if no existentCustomerId is provided', async () => {
     const { sut } = makeSut()
     const httpRequest = makeHttpRequest({
       existentCustomerId: undefined

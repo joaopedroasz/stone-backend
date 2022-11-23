@@ -1,9 +1,9 @@
-import { HttpResponse, UpdateCustomerHttp, UpdateCustomerHttpInputDTO, UpdateCustomerHttpOutputDTO } from '../contracts'
+import { HttpResponse, UpdateCustomerByIdHttp, UpdateCustomerByIdHttpInputDTO, UpdateCustomerByIdHttpOutputDTO } from '../contracts'
 import { MissingParamError } from '../errors'
 import { badRequest } from '../helpers'
 
-export class UpdateCustomerHttpController implements UpdateCustomerHttp {
-  public async handle (request: UpdateCustomerHttpInputDTO): Promise<HttpResponse<UpdateCustomerHttpOutputDTO | Error>> {
+export class UpdateCustomerHttpByIdController implements UpdateCustomerByIdHttp {
+  public async handle (request: UpdateCustomerByIdHttpInputDTO): Promise<HttpResponse<UpdateCustomerByIdHttpOutputDTO | Error>> {
     const errorInRequest = this.validateRequest(request)
     if (errorInRequest) return badRequest(errorInRequest)
 
@@ -17,7 +17,7 @@ export class UpdateCustomerHttpController implements UpdateCustomerHttp {
     }
   }
 
-  private validateRequest (request: UpdateCustomerHttpInputDTO): MissingParamError | undefined {
+  private validateRequest (request: UpdateCustomerByIdHttpInputDTO): MissingParamError | undefined {
     const requiredFields: ['existentCustomerId'] = ['existentCustomerId']
     for (const field of requiredFields) {
       const fieldExists = !!request[field]

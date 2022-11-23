@@ -5,7 +5,9 @@ import {
   UpdateCustomerByIdHttp,
   UpdateCustomerHttpByIdController,
   UpdateCustomerByIdHttpInputDTO,
-  success
+  success,
+  unknownError,
+  serverError
 } from '@/infra/http'
 
 const makeHttpRequest = (props?: Partial<UpdateCustomerByIdHttpInputDTO>): UpdateCustomerByIdHttpInputDTO => ({
@@ -78,5 +80,25 @@ describe('UpdateCustomerHttpController', () => {
       document: 12345678910,
       name: 'name'
     }))
+  })
+
+  it('should return unknownError if use case throws non error instance', async () => {
+    const { sut, updateCustomerById } = makeSut()
+    jest.spyOn(updateCustomerById, 'execute').mockRejectedValueOnce('any_error')
+    const httpRequest = makeHttpRequest()
+
+    const httpResponse = await sut.handle(httpRequest)
+
+    expect(httpResponse).toEqual(unknownError('any_error'))
+  })
+
+  it('should return serverError if use case throws error instance', async () => {
+    const { sut, updateCustomerById } = makeSut()
+    jest.spyOn(updateCustomerById, 'execute').mockRejectedValueOnce(new Error('any_error'))
+    const httpRequest = makeHttpRequest()
+
+    const httpResponse = await sut.handle(httpRequest)
+
+    expect(httpResponse).toEqual(serverError(new Error('any_error')))
   })
 })

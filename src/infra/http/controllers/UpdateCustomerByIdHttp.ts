@@ -1,7 +1,7 @@
 import { UpdateCustomerById, UpdateCustomerByIdInputDTO } from '@/application/contracts'
 import { HttpResponse, UpdateCustomerByIdHttp, UpdateCustomerByIdHttpInputDTO, UpdateCustomerByIdHttpOutputDTO } from '../contracts'
 import { MissingParamError } from '../errors'
-import { badRequest, success } from '../helpers'
+import { badRequest, serverError, success, unknownError } from '../helpers'
 
 export class UpdateCustomerHttpByIdController implements UpdateCustomerByIdHttp {
   constructor (
@@ -9,21 +9,28 @@ export class UpdateCustomerHttpByIdController implements UpdateCustomerByIdHttp 
   ) {}
 
   public async handle (request: UpdateCustomerByIdHttpInputDTO): Promise<HttpResponse<UpdateCustomerByIdHttpOutputDTO | Error>> {
-    const errorInRequest = this.validateRequest(request)
-    if (errorInRequest) return badRequest(errorInRequest)
+    try {
+      const errorInRequest = this.validateRequest(request)
+      if (errorInRequest) return badRequest(errorInRequest)
 
-    const { existentCustomerId, newId, newName, newDocument } = request
-    const input: UpdateCustomerByIdInputDTO = {
-      id: existentCustomerId,
-      newCustomer: {
-        id: newId,
-        name: newName,
-        document: newDocument
+      const { existentCustomerId, newId, newName, newDocument } = request
+      const input: UpdateCustomerByIdInputDTO = {
+        id: existentCustomerId,
+        newCustomer: {
+          id: newId,
+          name: newName,
+          document: newDocument
+        }
       }
-    }
-    const updatedCustomer = await this.updateCustomerById.execute(input)
+      const updatedCustomer = await this.updateCustomerById.execute(input)
 
-    return success(updatedCustomer)
+      return success(updatedCustomer)
+    } catch (error) {
+      const isError = error instanceof Error
+      if (!isError) return unknownError(error)
+
+      return serverError(error)
+    }
   }
 
   private validateRequest (request: UpdateCustomerByIdHttpInputDTO): MissingParamError | undefined {

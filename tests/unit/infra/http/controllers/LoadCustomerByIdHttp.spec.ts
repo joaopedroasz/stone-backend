@@ -1,3 +1,4 @@
+import { LoadCustomerById } from '@/application/contracts'
 import {
   badRequest,
   LoadCustomerByIdHttp,
@@ -11,14 +12,25 @@ const makeHttpRequest = (props?: Partial<LoadCustomerByIdHttpInputDTO>): LoadCus
   ...props
 })
 
+const makeLoadCustomerById = (): LoadCustomerById => ({
+  execute: async () => ({
+    id: 'any_id',
+    document: 0,
+    name: 'any_name'
+  })
+})
+
 type SutType = {
   sut: LoadCustomerByIdHttp
+  loadCustomerById: LoadCustomerById
 }
 
 const makeSut = (): SutType => {
-  const sut = new LoadCustomerByIdHttpController()
+  const loadCustomerById = makeLoadCustomerById()
+  const sut = new LoadCustomerByIdHttpController(loadCustomerById)
   return {
-    sut
+    sut,
+    loadCustomerById
   }
 }
 
@@ -30,5 +42,17 @@ describe('LoadCustomerByIdHttpController', () => {
     const httpResponse = await sut.handle(httpRequest)
 
     expect(httpResponse).toEqual(badRequest(new MissingParamError('customerId')))
+  })
+
+  it('should call LoadCustomerById with correct values', async () => {
+    const { sut, loadCustomerById } = makeSut()
+    const httpRequest = makeHttpRequest()
+    const handleSpy = jest.spyOn(loadCustomerById, 'execute')
+
+    await sut.handle(httpRequest)
+
+    expect(handleSpy).toHaveBeenCalledWith({
+      customerId: httpRequest.customerId
+    })
   })
 })

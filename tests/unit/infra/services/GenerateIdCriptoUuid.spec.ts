@@ -34,4 +34,12 @@ describe('GenerateIdCriptoUuidService', () => {
 
     expect(randomUUIDSpy).toHaveBeenCalled()
   })
+
+  it('should return randomUUID result', () => {
+    const { sut } = makeSut()
+
+    const id = sut.generate()
+
+    expect(id).toBe('any_id')
+  })
 })

@@ -1,7 +1,7 @@
 import { UpdateCustomerById, UpdateCustomerByIdInputDTO } from '@/application/contracts'
 import { HttpResponse, UpdateCustomerByIdHttp, UpdateCustomerByIdHttpInputDTO, UpdateCustomerByIdHttpOutputDTO } from '../contracts'
 import { MissingParamError } from '../errors'
-import { badRequest } from '../helpers'
+import { badRequest, success } from '../helpers'
 
 export class UpdateCustomerHttpByIdController implements UpdateCustomerByIdHttp {
   constructor (
@@ -21,16 +21,9 @@ export class UpdateCustomerHttpByIdController implements UpdateCustomerByIdHttp 
         document: newDocument
       }
     }
-    await this.updateCustomerById.execute(input)
+    const updatedCustomer = await this.updateCustomerById.execute(input)
 
-    return {
-      statusCode: 0,
-      body: {
-        id: '',
-        document: 0,
-        name: ''
-      }
-    }
+    return success(updatedCustomer)
   }
 
   private validateRequest (request: UpdateCustomerByIdHttpInputDTO): MissingParamError | undefined {

@@ -1,4 +1,5 @@
 import { HttpResponse } from '../contracts'
+import { ErrorWithCode } from '../contracts/errors'
 
 export const badRequest = (error: Error): HttpResponse<Error> => ({
   statusCode: 400,
@@ -15,8 +16,8 @@ export const unknownError = (error: any): HttpResponse<Error> => ({
   body: new Error(error)
 })
 
-export const serverError = (error: Error): HttpResponse<Error> => ({
-  statusCode: 500,
+export const serverError = (error: ErrorWithCode): HttpResponse<Error> => ({
+  statusCode: error.code ?? 500,
   body: error
 })
 

@@ -1,7 +1,7 @@
 import { LoadCustomerById } from '@/application/contracts'
 import { HttpResponse, LoadCustomerByIdHttp, LoadCustomerByIdHttpInputDTO, LoadCustomerByIdHttpOutputDTO } from '../contracts'
 import { MissingParamError } from '../errors'
-import { badRequest } from '../helpers'
+import { badRequest, success } from '../helpers'
 
 export class LoadCustomerByIdHttpController implements LoadCustomerByIdHttp {
   constructor (
@@ -13,16 +13,9 @@ export class LoadCustomerByIdHttpController implements LoadCustomerByIdHttp {
     if (error) return badRequest(error)
 
     const { customerId } = request
-    await this.loadCustomerById.execute({ customerId })
+    const loadedCustomer = await this.loadCustomerById.execute({ customerId })
 
-    return {
-      statusCode: 0,
-      body: {
-        id: 'any_id',
-        document: 0,
-        name: 'any_name'
-      }
-    }
+    return success<LoadCustomerByIdHttpOutputDTO>(loadedCustomer)
   }
 
   private validateRequest (request: LoadCustomerByIdHttpInputDTO): MissingParamError | undefined {

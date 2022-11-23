@@ -1,4 +1,4 @@
-import { BadGatewayError } from './BadGateway'
+import { BadGatewayError } from '@/application/errors'
 
 export class CustomerNotCreatedError extends BadGatewayError {
   constructor () {

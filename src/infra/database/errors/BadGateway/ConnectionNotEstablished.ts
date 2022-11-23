@@ -1,4 +1,4 @@
-import { BadGatewayError } from './BadGateway'
+import { BadGatewayError } from '@/application/errors'
 
 export class ConnectionNotEstablishedError extends BadGatewayError {
   constructor () {

@@ -24,7 +24,7 @@ export class UpdateCustomerHttpByIdController implements UpdateCustomerByIdHttp 
       }
       const updatedCustomer = await this.updateCustomerById.execute(input)
 
-      return success(updatedCustomer)
+      return success<UpdateCustomerByIdHttpOutputDTO>(updatedCustomer)
     } catch (error) {
       const isError = error instanceof Error
       if (!isError) return unknownError(error)

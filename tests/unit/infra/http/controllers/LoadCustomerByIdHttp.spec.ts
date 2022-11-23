@@ -5,7 +5,9 @@ import {
   LoadCustomerByIdHttpController,
   LoadCustomerByIdHttpInputDTO,
   MissingParamError,
-  success
+  serverError,
+  success,
+  unknownError
 } from '@/infra/http'
 
 const makeHttpRequest = (props?: Partial<LoadCustomerByIdHttpInputDTO>): LoadCustomerByIdHttpInputDTO => ({
@@ -68,5 +70,25 @@ describe('LoadCustomerByIdHttpController', () => {
       document: 0,
       name: 'any_name'
     }))
+  })
+
+  it('should return return unknownError if use case throws non error instance', async () => {
+    const { sut, loadCustomerById } = makeSut()
+    const httpRequest = makeHttpRequest()
+    jest.spyOn(loadCustomerById, 'execute').mockRejectedValueOnce('any_error')
+
+    const httpResponse = await sut.handle(httpRequest)
+
+    expect(httpResponse).toEqual(unknownError('any_error'))
+  })
+
+  it('should return return serverError if use case throws error instance', async () => {
+    const { sut, loadCustomerById } = makeSut()
+    const httpRequest = makeHttpRequest()
+    jest.spyOn(loadCustomerById, 'execute').mockRejectedValueOnce(new Error('any_error'))
+
+    const httpResponse = await sut.handle(httpRequest)
+
+    expect(httpResponse).toEqual(serverError(new Error('any_error')))
   })
 })

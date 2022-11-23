@@ -4,7 +4,8 @@ import {
   MissingParamError,
   UpdateCustomerByIdHttp,
   UpdateCustomerHttpByIdController,
-  UpdateCustomerByIdHttpInputDTO
+  UpdateCustomerByIdHttpInputDTO,
+  success
 } from '@/infra/http'
 
 const makeHttpRequest = (props?: Partial<UpdateCustomerByIdHttpInputDTO>): UpdateCustomerByIdHttpInputDTO => ({
@@ -64,5 +65,18 @@ describe('UpdateCustomerHttpController', () => {
         document: httpRequest.newDocument
       }
     })
+  })
+
+  it('should return UpdateCustomerById result on success', async () => {
+    const { sut } = makeSut()
+    const httpRequest = makeHttpRequest()
+
+    const httpResponse = await sut.handle(httpRequest)
+
+    expect(httpResponse).toEqual(success({
+      id: 'id',
+      document: 12345678910,
+      name: 'name'
+    }))
   })
 })

@@ -4,7 +4,8 @@ import {
   LoadCustomerByIdHttp,
   LoadCustomerByIdHttpController,
   LoadCustomerByIdHttpInputDTO,
-  MissingParamError
+  MissingParamError,
+  success
 } from '@/infra/http'
 
 const makeHttpRequest = (props?: Partial<LoadCustomerByIdHttpInputDTO>): LoadCustomerByIdHttpInputDTO => ({
@@ -54,5 +55,18 @@ describe('LoadCustomerByIdHttpController', () => {
     expect(handleSpy).toHaveBeenCalledWith({
       customerId: httpRequest.customerId
     })
+  })
+
+  it('should return LoadCustomerById result on success', async () => {
+    const { sut } = makeSut()
+    const httpRequest = makeHttpRequest()
+
+    const httpResponse = await sut.handle(httpRequest)
+
+    expect(httpResponse).toEqual(success({
+      id: 'any_id',
+      document: 0,
+      name: 'any_name'
+    }))
   })
 })

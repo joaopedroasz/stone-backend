@@ -16,7 +16,7 @@ const jestConfig: Config = {
   },
   coveragePathIgnorePatterns: [
     'contracts',
-    '<rootDir>/src/main',
+    '<rootDir>/src/infra/http/rest',
     '<rootDir>/src/domain/repositories',
     'index.ts'
   ],

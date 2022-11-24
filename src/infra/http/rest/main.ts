@@ -1,3 +1,4 @@
+import './config/moduleAlias'
 import { RedisConnectionSingleton } from '@/infra/database'
 import { ServerHttpRestExpressAdapter } from './express'
 import { env, startServer } from './config'

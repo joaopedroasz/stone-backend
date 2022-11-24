@@ -101,4 +101,17 @@ describe('UpdateCustomerByIdRoute', () => {
       document: 98765432101
     })
   })
+
+  it('should return 404 if customer does not exist', async () => {
+    const response = await request(server.express).put('/customers/invalidCustomerId').send({
+      newId: 'validNewId',
+      newName: 'new_name',
+      newDocument: 98765432101
+    })
+
+    expect(response.status).toBe(404)
+    expect(response.body).toEqual({
+      error: 'Entity customer not found with id invalidCustomerId'
+    })
+  })
 })

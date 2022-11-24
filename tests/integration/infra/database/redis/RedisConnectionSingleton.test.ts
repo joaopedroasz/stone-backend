@@ -13,6 +13,7 @@ describe('RedisConnectionSingleton', () => {
   let delSpy: jest.Mock
   let disconnectSpy: jest.Mock
   let redisSpy: jest.Mock
+  let flushAllSpy: jest.Mock
 
   const host = 'localhost'
   const port = process.env.REDIS_PORT ? parseInt(process.env.REDIS_PORT) : 6378
@@ -24,11 +25,13 @@ describe('RedisConnectionSingleton', () => {
     setSpy = jest.fn().mockResolvedValue('OK')
     delSpy = jest.fn().mockResolvedValue(1)
     disconnectSpy = jest.fn()
+    flushAllSpy = jest.fn().mockResolvedValue('OK')
     redisSpy = jest.fn().mockReturnValue({
       get: getSpy,
       set: setSpy,
       disconnect: disconnectSpy,
-      del: delSpy
+      del: delSpy,
+      flushall: flushAllSpy
     })
     jest.mocked(Redis).mockImplementation(redisSpy)
   })
@@ -142,6 +145,22 @@ describe('RedisConnectionSingleton', () => {
   it('should throw ConnectionNotEstablishedError if del is called before connect', async () => {
     await sut.disconnect()
     const promise = sut.delete('any_key')
+
+    await expect(promise).rejects.toThrowError(new ConnectionNotEstablishedError())
+  })
+
+  it('should call flushall', async () => {
+    await sut.connect()
+
+    await sut.clear()
+
+    expect(flushAllSpy).toHaveBeenCalled()
+    expect(flushAllSpy).toHaveBeenCalledTimes(1)
+  })
+
+  it('should throw ConnectionNotEstablishedError if flushall is called before connect', async () => {
+    await sut.disconnect()
+    const promise = sut.clear()
 
     await expect(promise).rejects.toThrowError(new ConnectionNotEstablishedError())
   })

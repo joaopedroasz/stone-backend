@@ -1,6 +1,7 @@
 import request from 'supertest'
 
 import { ServerHttpRestExpressAdapter, UpdateCustomerByIdRoute } from '@/infra/http'
+import { ConnectionNotEstablishedError } from '@/infra/database'
 import { connection } from '@/tests/utils'
 
 describe('UpdateCustomerByIdRoute', () => {
@@ -131,6 +132,26 @@ describe('UpdateCustomerByIdRoute', () => {
     expect(response.status).toBe(409)
     expect(response.body).toEqual({
       error: 'Entity customer with id validExistentCustomerId already exists'
+    })
+  })
+
+  it('should return 502 if database connection throws ConnectionNotEstablishedError', async () => {
+    const createdCustomer = {
+      id: 'validCustomerId',
+      name: 'any_name',
+      document: 12345678910
+    }
+    const key = `customer:${createdCustomer.id}`
+    await connection.set(key, JSON.stringify(createdCustomer))
+    jest.spyOn(connection, 'set').mockRejectedValueOnce(new ConnectionNotEstablishedError())
+
+    const response = await request(server.express).put(`/customers/${createdCustomer.id}`).send({
+      newId: 'validNewCustomerId'
+    })
+
+    expect(response.status).toBe(502)
+    expect(response.body).toEqual({
+      error: 'Connection not established'
     })
   })
 })

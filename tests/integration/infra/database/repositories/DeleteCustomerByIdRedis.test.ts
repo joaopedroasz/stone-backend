@@ -21,10 +21,12 @@ const makeSut = (): SutType => ({
 
 describe('DeleteCustomerByIdRedisRepository', () => {
   beforeAll(async () => {
+    const { connection } = makeSut()
     await connection.connect()
   })
 
   afterAll(async () => {
+    const { connection } = makeSut()
     await connection.disconnect()
   })
 

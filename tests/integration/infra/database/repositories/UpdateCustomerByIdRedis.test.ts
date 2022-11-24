@@ -26,10 +26,12 @@ const makeSut = (): SutType => {
 
 describe('UpdateCustomerByIdRedisRepository', () => {
   beforeAll(async () => {
+    const { connection } = makeSut()
     await connection.connect()
   })
 
   afterAll(async () => {
+    const { connection } = makeSut()
     await connection.disconnect()
   })
 

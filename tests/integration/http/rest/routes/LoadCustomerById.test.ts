@@ -29,4 +29,11 @@ describe('LoadCustomerByIdRoute', () => {
     expect(response.status).toBe(200)
     expect(response.body).toEqual(createdCustomer)
   })
+
+  it('should return 404 if customer not found', async () => {
+    const response = await request(server.express).get('/customers/invalid_id')
+
+    expect(response.status).toBe(404)
+    expect(response.body).toEqual({ error: 'Entity customer not found with id invalid_id' })
+  })
 })

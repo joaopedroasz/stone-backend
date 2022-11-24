@@ -1,3 +1,4 @@
+import cors from 'cors'
 import express, { Application, json, Request, Response } from 'express'
 
 import { HttpController } from '../../contracts'
@@ -9,6 +10,7 @@ export class ServerHttpRestExpressAdapter implements ServerHttpRest {
   constructor () {
     this.express = express()
     this.express.use(json())
+    this.express.use(cors())
   }
 
   public on (method: RestMethod, path: string, controller: HttpController): void {

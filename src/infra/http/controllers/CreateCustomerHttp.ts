@@ -4,10 +4,10 @@ import {
   CreateCustomerHttp,
   CreateCustomerHttpInputDTO,
   CreateCustomerHttpOutputDTO,
+  created,
   HttpResponse,
   MissingParamError,
   serverError,
-  success,
   unknownError
 } from '@/infra/http'
 
@@ -23,7 +23,7 @@ export class CreateCustomerHttpController implements CreateCustomerHttp {
 
       const createdCustomer = await this.createCustomer.execute(request)
 
-      return success<CreateCustomerHttpOutputDTO>(createdCustomer)
+      return created<CreateCustomerHttpOutputDTO>(createdCustomer)
     } catch (error) {
       const isError = error instanceof Error
       if (!isError) return unknownError(error)

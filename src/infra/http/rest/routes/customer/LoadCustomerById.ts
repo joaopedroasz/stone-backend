@@ -1,6 +1,6 @@
 import { LoadCustomerByIdUseCase } from '@/application/UseCases'
 import { DatabaseConnection, LoadCustomerByIdRedisRepository } from '@/infra/database'
-import { LoadCustomerByIdHttpController } from '@/infra/http'
+import { LoadCustomerByIdHttpController } from '@/infra/http/controllers'
 import { ServerHttpRest } from '../../contracts'
 
 export class LoadCustomerByIdRoute {

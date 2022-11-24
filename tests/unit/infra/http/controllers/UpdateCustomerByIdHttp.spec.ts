@@ -3,7 +3,7 @@ import {
   badRequest,
   MissingParamError,
   UpdateCustomerByIdHttp,
-  UpdateCustomerHttpByIdController,
+  UpdateCustomerByIdHttpController,
   UpdateCustomerByIdHttpInputDTO,
   success,
   unknownError,
@@ -33,7 +33,7 @@ type SutType = {
 
 const makeSut = (): SutType => {
   const updateCustomerById = makeUpdateCustomerById()
-  const sut = new UpdateCustomerHttpByIdController(updateCustomerById)
+  const sut = new UpdateCustomerByIdHttpController(updateCustomerById)
   return {
     sut,
     updateCustomerById

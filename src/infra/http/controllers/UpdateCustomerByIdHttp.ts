@@ -3,7 +3,7 @@ import { HttpResponse, UpdateCustomerByIdHttp, UpdateCustomerByIdHttpInputDTO, U
 import { MissingParamError } from '../errors'
 import { badRequest, serverError, success, unknownError } from '../helpers'
 
-export class UpdateCustomerHttpByIdController implements UpdateCustomerByIdHttp {
+export class UpdateCustomerByIdHttpController implements UpdateCustomerByIdHttp {
   constructor (
     private readonly updateCustomerById: UpdateCustomerById
   ) {}

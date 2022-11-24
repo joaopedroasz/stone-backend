@@ -1,5 +1,5 @@
 import { DatabaseConnection } from '@/infra/database'
-import { CreateCustomerRoute } from '../routes'
+import { CreateCustomerRoute, LoadCustomerByIdRoute, UpdateCustomerByIdRoute } from '../routes'
 import { ServerHttpRest } from '../contracts'
 
 export type StartServerProps = {
@@ -13,6 +13,8 @@ export async function startServer (props: StartServerProps): Promise<void> {
   await databaseConnection.connect()
 
   new CreateCustomerRoute(serverHttpRest, databaseConnection)
+  new LoadCustomerByIdRoute(serverHttpRest, databaseConnection)
+  new UpdateCustomerByIdRoute(serverHttpRest, databaseConnection)
 
   serverHttpRest.listen(port)
 

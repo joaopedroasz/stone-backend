@@ -6,9 +6,9 @@ import {
   CreateCustomerHttp,
   CreateCustomerHttpController,
   CreateCustomerHttpInputDTO,
+  created,
   MissingParamError,
   serverError,
-  success,
   unknownError
 } from '@/infra/http'
 
@@ -82,7 +82,7 @@ describe('CreateCustomerHttpController', () => {
 
     const httpResponse = await sut.handle(httpRequest)
 
-    expect(httpResponse).toEqual(success({
+    expect(httpResponse).toEqual(created({
       id: 'any_id',
       document: 10,
       name: 'any_name'

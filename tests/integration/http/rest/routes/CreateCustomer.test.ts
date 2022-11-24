@@ -16,6 +16,17 @@ describe('CreateCustomerRoute', () => {
     await connection.disconnect()
   })
 
+  it('should return 201 if customer is created', async () => {
+    const response = await request(server.express)
+      .post('/customers')
+      .send({
+        document: 100,
+        name: 'any_name'
+      })
+
+    expect(response.status).toBe(201)
+  })
+
   it('should return 400 if no name is provided', async () => {
     const input = {
       name: '',

@@ -1,4 +1,4 @@
-import { HttpController } from './controller'
+import { HttpController } from './Controller'
 
 export type CreateCustomerHttpInputDTO = {
   name: string

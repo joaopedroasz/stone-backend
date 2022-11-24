@@ -54,4 +54,9 @@ export class RedisConnectionSingleton implements DatabaseConnection {
     if (!this.connection) throw new ConnectionNotEstablishedError()
     return !!await this.connection.del(key)
   }
+
+  public async clear (): Promise<void> {
+    if (!this.connection) throw new ConnectionNotEstablishedError()
+    await this.connection.flushall()
+  }
 }

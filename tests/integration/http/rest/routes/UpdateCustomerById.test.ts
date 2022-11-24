@@ -114,4 +114,23 @@ describe('UpdateCustomerByIdRoute', () => {
       error: 'Entity customer not found with id invalidCustomerId'
     })
   })
+
+  it('should return 409 if newId is already in use', async () => {
+    const createdCustomer = {
+      id: 'validExistentCustomerId',
+      name: 'any_name',
+      document: 12345678910
+    }
+    const key = `customer:${createdCustomer.id}`
+    await connection.set(key, JSON.stringify(createdCustomer))
+
+    const response = await request(server.express).put(`/customers/${createdCustomer.id}`).send({
+      newId: 'validExistentCustomerId'
+    })
+
+    expect(response.status).toBe(409)
+    expect(response.body).toEqual({
+      error: 'Entity customer with id validExistentCustomerId already exists'
+    })
+  })
 })

@@ -9,6 +9,7 @@ describe('UpdateCustomerByIdRoute', () => {
 
   beforeAll(async () => {
     await connection.connect()
+    await connection.clear()
   })
 
   afterAll(async () => {
@@ -55,6 +56,27 @@ describe('UpdateCustomerByIdRoute', () => {
     expect(response.body).toEqual({
       id: 'new_customerId',
       name: 'any_name',
+      document: 12345678910
+    })
+  })
+
+  it('should return 200 when update only name', async () => {
+    const createdCustomer = {
+      id: 'existentCustomerId',
+      name: 'any_name',
+      document: 12345678910
+    }
+    const key = `customer:${createdCustomer.id}`
+    await connection.set(key, JSON.stringify(createdCustomer))
+
+    const response = await request(server.express).put(`/customers/${createdCustomer.id}`).send({
+      newName: 'new_name'
+    })
+
+    expect(response.status).toBe(200)
+    expect(response.body).toEqual({
+      id: 'existentCustomerId',
+      name: 'new_name',
       document: 12345678910
     })
   })

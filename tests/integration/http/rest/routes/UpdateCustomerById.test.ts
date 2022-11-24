@@ -80,4 +80,25 @@ describe('UpdateCustomerByIdRoute', () => {
       document: 12345678910
     })
   })
+
+  it('should return 200 when update only document', async () => {
+    const createdCustomer = {
+      id: 'CustomerId',
+      name: 'any_name',
+      document: 12345678910
+    }
+    const key = `customer:${createdCustomer.id}`
+    await connection.set(key, JSON.stringify(createdCustomer))
+
+    const response = await request(server.express).put(`/customers/${createdCustomer.id}`).send({
+      newDocument: 98765432101
+    })
+
+    expect(response.status).toBe(200)
+    expect(response.body).toEqual({
+      id: 'CustomerId',
+      name: 'any_name',
+      document: 98765432101
+    })
+  })
 })

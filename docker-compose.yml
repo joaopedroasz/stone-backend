@@ -1,7 +1,19 @@
 version: '3.8'
 services:
+  dev-server:
+    build: .
+    ports:
+      - 4001:4001
+    volumes:
+      - .:/home/node/app
+      - /home/node/app/node_modules
+      - /home/node/app/dist
+    depends_on:
+      - dev-db-cache
+
   dev-db-cache:
     image: redis:7-alpine
+    container_name: redis_dev
     restart: always
     ports:
       - ${REDIS_PORT}:6379
